@@ -1,0 +1,28 @@
+<div class="users-management">
+  <div class="page-header">
+    <h1>Users Directory</h1>
+    <p>Real-world example using JSONPlaceholder Users API</p>
+  </div>
+  
+  <app-dynamic-table
+    [data]="data()"
+    [columns]="columns()"
+    [loading]="loading()"
+    [total]="total()"
+    [error]="error()"
+    [selectedRows]="selectedRows()"
+    [currentPage]="currentPage()"
+    [pageSize]="pageSize()"
+    [title]="'Users'"
+    [config]="tableConfig"
+    (rowClick)="onRowClick($event)"
+    (selectionChange)="onSelectionChange($event)"
+    (search)="onSearch($event)"
+    (filter)="onFilter($event)"
+    (sort)="onSort($event)"
+    (pageChange)="onPageChange($event)"
+    (export)="onExport()"
+    (reset)="onReset()"
+    (bulkDelete)="onBulkDelete($event)"
+  />
+</div>

@@ -1,0 +1,140 @@
+<div class="app-container">
+  <!-- Navigation Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <h1 class="app-title">Dynamic Table App</h1>
+      <nav class="main-nav">
+        <a routerLink="/data-table" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <i class="pi pi-table"></i>
+          Demo Table
+        </a>
+        <a routerLink="/data-table/posts" routerLinkActive="active">
+          <i class="pi pi-file-edit"></i>
+          Posts API
+        </a>
+        <a routerLink="/data-table/users" routerLinkActive="active">
+          <i class="pi pi-users"></i>
+          Users API
+        </a>
+        <a routerLink="/data-table/countries" routerLinkActive="active">
+          <i class="pi pi-globe"></i>
+          Countries API
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="app-main">
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>&copy; 2024 Dynamic Table App - Built with Angular 18 & PrimeNG</p>
+  </footer>
+</div>
+
+<style>
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .app-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .main-nav {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .main-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+  }
+
+  .main-nav a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .main-nav a.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+  }
+
+  .app-main {
+    flex: 1;
+    background: #f8f9fa;
+    min-height: calc(100vh - 140px);
+  }
+
+  .main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .app-footer {
+    background: #343a40;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+  }
+
+  .app-footer p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .header-content {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .main-nav {
+      justify-content: center;
+    }
+
+    .main-nav a {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>

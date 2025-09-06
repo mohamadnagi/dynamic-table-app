@@ -1,0 +1,26 @@
+<div class="data-table-page">
+  <app-dynamic-table
+    [data]="data()"
+    [columns]="columns"
+    [loading]="loading()"
+    [total]="total()"
+    [error]="error()"
+    [selectedRows]="selectedRows()"
+    [currentPage]="currentPage()"
+    [pageSize]="pageSize()"
+    [title]="'Dynamic Data Table'"
+    [config]="tableConfig"
+    (rowClick)="onRowClick($event)"
+    (selectionChange)="onSelectionChange($event)"
+    (editSave)="onEditSave($event)"
+    (editCancel)="onEditCancel($event)"
+    (actionTriggered)="onActionTriggered($event)"
+    (search)="onSearch($event)"
+    (filter)="onFilter($event)"
+    (sort)="onSort($event)"
+    (pageChange)="onPageChange($event)"
+    (export)="onExport()"
+    (reset)="onReset()"
+    (bulkDelete)="onBulkDelete($event)"
+  />
+</div>

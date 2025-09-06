@@ -1,0 +1,240 @@
+<div class="dynamic-table-container">
+  <!-- Toolbar -->
+  <app-toolbar
+    [title]="title"
+    [total]="total"
+    [hasSelection]="selectedRows.length > 0"
+    [selectedCount]="selectedRows.length"
+    [enableGlobalSearch]="config.enableGlobalSearch ?? true"
+    [enableColumnPicker]="config.enableColumnPicker ?? true"
+    [enableExport]="config.enableExport ?? true"
+    (search)="onSearch($event)"
+    (toggleColumnPicker)="showColumnPicker = true"
+    (export)="onExport()"
+    (reset)="onReset()"
+    (bulkDelete)="onBulkDelete()"
+  />
+
+  <!-- Column Picker Dialog -->
+  <app-column-picker
+    [visible]="showColumnPicker"
+    [columns]="columns"
+    (visibleChange)="showColumnPicker = $event"
+    (columnsChange)="onColumnsChange($event)"
+  />
+
+  <!-- Table -->
+  <p-table
+    [value]="data"
+    [loading]="loading"
+    [paginator]="true"
+    [rows]="pageSize"
+    [totalRecords]="total"
+    [first]="currentPage * pageSize"
+    [lazy]="false"
+    [virtualScroll]="config.enableVirtualScroll"
+    [scrollable]="true"
+    [selectionMode]="config.enableSelection ? 'multiple' : undefined"
+    [selection]="selectedRows"
+    (onSelectionChange)="onSelectionChange($event)"
+    (onRowSelect)="onRowSelect($event)"
+    (onRowUnselect)="onRowUnselect($event)"
+    [rowTrackBy]="trackByRowId"
+    [sortMode]="'multiple'"
+    [customSort]="false"
+    (onSort)="onSort($event)"
+    [resizableColumns]="true"
+    [reorderableColumns]="true"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rowsPerPageOptions]="pageSizeOptions"
+    (onPage)="onPageChange($event)"
+    styleClass="p-datatable-sm"
+  >
+    <!-- Column Headers -->
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+            <th *ngIf="config.enableSelection" style="width: 3rem">
+              <input 
+                type="checkbox"
+                name="selectAll"
+                id="selectAll"
+                [checked]="isAllSelected()"
+                (change)="onSelectAll($event)"
+                class="form-checkbox"
+              />
+            </th>
+        <th 
+          *ngFor="let col of getVisibleColumns(); trackBy: trackByColumnKey"
+          [pSortableColumn]="col.sortable ? col.key : undefined"
+          [style.width]="col.width"
+        >
+          {{ col.header }}
+          <p-sortIcon *ngIf="col.sortable" [field]="col.key"></p-sortIcon>
+        </th>
+        <th style="width: 120px">Actions</th>
+      </tr>
+    </ng-template>
+
+    <!-- Column Filters -->
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngIf="config.enableSelection"></th>
+        <th *ngFor="let col of getVisibleColumns(); trackBy: trackByColumnKey">
+          <ng-container [ngSwitch]="col.type">
+            <!-- Text Filter -->
+            <input 
+              *ngSwitchCase="'text'"
+              pInputText 
+              type="text" 
+              [name]="'filter-' + col.key"
+              [id]="'filter-' + col.key"
+              [placeholder]="'Filter ' + col.header"
+              (input)="onFilterInput(col.key, $event)"
+              class="w-full"
+            />
+            
+            <!-- Number Filter -->
+            <input 
+              *ngSwitchCase="'number'"
+              pInputText 
+              type="number" 
+              [name]="'filter-' + col.key"
+              [id]="'filter-' + col.key"
+              [placeholder]="'Filter ' + col.header"
+              (input)="onFilterInput(col.key, $event)"
+              class="w-full"
+            />
+            
+            <!-- Date Filter -->
+            <input 
+              *ngSwitchCase="'date'"
+              pInputText 
+              type="date" 
+              [name]="'filter-' + col.key"
+              [id]="'filter-' + col.key"
+              [placeholder]="'Filter ' + col.header"
+              (input)="onFilterInput(col.key, $event)"
+              class="w-full"
+            />
+            
+            <!-- Select Filter -->
+            <p-dropdown
+              *ngSwitchCase="'badge'"
+              [options]="col.options || []"
+              [name]="'filter-' + col.key"
+              [placeholder]="'Filter ' + col.header"
+              (onChange)="onFilterDropdown(col.key, $event)"
+              [showClear]="true"
+              class="w-full"
+            />
+          </ng-container>
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <!-- Row Data -->
+    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+      <tr [pSelectableRow]="row">
+        <td *ngIf="config.enableSelection">
+          <input 
+            type="checkbox"
+            [name]="'row-' + row.id"
+            [id]="'row-' + row.id"
+            [checked]="isRowSelected(row.id)"
+            (change)="onRowSelectionChange(row.id, $event)"
+            class="form-checkbox"
+          />
+        </td>
+        <td 
+          *ngFor="let col of getVisibleColumns(); trackBy: trackByColumnKey"
+        >
+          <ng-container [ngSwitch]="col.type">
+            <!-- Text -->
+            <span *ngSwitchCase="'text'">{{ row[col.key] }}</span>
+            
+            <!-- Number -->
+            <span *ngSwitchCase="'number'">{{ row[col.key] | number }}</span>
+            
+            <!-- Date -->
+            <span *ngSwitchCase="'date'">{{ row[col.key] | date:'short' }}</span>
+            
+            <!-- Badge -->
+            <p-tag 
+              *ngSwitchCase="'badge'"
+              [value]="row[col.key]"
+              [severity]="getBadgeSeverity(row, col)"
+            />
+            
+            <!-- Template -->
+            <ng-container *ngSwitchCase="'template'">
+              <ng-container [ngTemplateOutlet]="rowTemplate || null" [ngTemplateOutletContext]="{ $implicit: row, column: col, rowIndex }"></ng-container>
+            </ng-container>
+            
+            <!-- Default -->
+            <span *ngSwitchDefault>{{ row[col.key] }}</span>
+          </ng-container>
+        </td>
+        <td class="actions-cell">
+          <div class="action-buttons">
+            <p-button 
+              icon="pi pi-eye" 
+              [text]="true" 
+              [rounded]="true"
+              size="small"
+              pTooltip="View"
+              (click)="rowClick.emit(row)"
+            />
+            <p-button 
+              *ngIf="config.enableInlineEdit"
+              icon="pi pi-pencil" 
+              [text]="true" 
+              [rounded]="true"
+              size="small"
+              pTooltip="Edit"
+              (click)="editSave.emit({ row, changes: {} })"
+            />
+            <p-button 
+              icon="pi pi-trash" 
+              [text]="true" 
+              [rounded]="true"
+              size="small"
+              severity="danger"
+              pTooltip="Delete"
+              (click)="actionTriggered.emit({ action: 'delete', data: row })"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Empty State -->
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [attr.colspan]="getColspan()" class="text-center p-4">
+          <div class="flex flex-column align-items-center gap-2">
+            <i class="pi pi-inbox text-4xl text-400"></i>
+            <span class="text-500">No data found</span>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Loading State -->
+    <ng-template pTemplate="loadingbody">
+      <tr *ngFor="let i of [1,2,3,4,5]">
+        <td *ngIf="config.enableSelection"></td>
+        <td *ngFor="let col of getVisibleColumns()">
+          <div class="h-1rem bg-gray-200 animate-pulse rounded"></div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Toast for notifications -->
+<p-toast></p-toast>
+
+<!-- Confirmation Dialog -->
+<p-confirmDialog></p-confirmDialog>

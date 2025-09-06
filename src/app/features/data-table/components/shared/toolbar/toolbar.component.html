@@ -1,0 +1,82 @@
+<div class="toolbar-container">
+  <!-- Left Section -->
+  <div class="toolbar-left">
+    <h2 class="toolbar-title">{{ title }}</h2>
+    <p-tag 
+      *ngIf="total > 0" 
+      [value]="total + ' items'" 
+      severity="info" 
+      class="ml-2"
+    />
+  </div>
+
+  <!-- Right Section -->
+  <div class="toolbar-right">
+    <!-- Global Search -->
+        <div *ngIf="enableGlobalSearch" class="search-container">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input 
+              pInputText 
+              type="text" 
+              name="globalSearch"
+              id="globalSearch"
+              placeholder="Search..."
+              [value]="searchTerm()"
+              (input)="onSearchInput($event)"
+              class="search-input"
+            />
+          </span>
+        </div>
+
+    <!-- Column Picker -->
+    <p-button 
+      *ngIf="enableColumnPicker"
+      icon="pi pi-cog" 
+      [text]="true" 
+      [rounded]="true"
+      (click)="toggleColumnPicker.emit()"
+      pTooltip="Column Settings"
+      tooltipPosition="bottom"
+    />
+
+    <!-- Export -->
+    <p-button 
+      *ngIf="enableExport"
+      icon="pi pi-download" 
+      [text]="true" 
+      [rounded]="true"
+      (click)="export.emit()"
+      pTooltip="Export to CSV"
+      tooltipPosition="bottom"
+    />
+
+    <!-- Reset -->
+    <p-button 
+      icon="pi pi-refresh" 
+      [text]="true" 
+      [rounded]="true"
+      (click)="reset.emit()"
+      pTooltip="Reset Table"
+      tooltipPosition="bottom"
+    />
+
+    <!-- Bulk Actions -->
+    <div *ngIf="hasSelection" class="bulk-actions">
+      <p-tag 
+        [value]="selectedCount + ' selected'" 
+        severity="warn" 
+        class="mr-2"
+      />
+      <p-button 
+        icon="pi pi-trash" 
+        [text]="true" 
+        [rounded]="true"
+        severity="danger"
+        (click)="bulkDelete.emit()"
+        pTooltip="Delete Selected"
+        tooltipPosition="bottom"
+      />
+    </div>
+  </div>
+</div>

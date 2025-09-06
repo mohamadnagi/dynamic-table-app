@@ -1,0 +1,87 @@
+<p-dialog 
+  [visible]="visible" 
+  [modal]="true" 
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '500px' }"
+  header="Column Settings"
+  (onHide)="visibleChange.emit(false)"
+>
+  <div class="column-picker-content">
+    <!-- Search -->
+    <div class="search-section">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input 
+          pInputText 
+          type="text" 
+          name="columnSearch"
+          id="columnSearch"
+          placeholder="Search columns..."
+          [value]="searchTerm()"
+          (input)="onSearchInput($event)"
+          class="w-full"
+        />
+      </span>
+    </div>
+
+    <!-- Column List -->
+    <div class="columns-section">
+      <div class="columns-header">
+        <h4>Available Columns</h4>
+        <p-button 
+          label="Select All" 
+          [text]="true" 
+          size="small"
+          (click)="selectAll()"
+        />
+      </div>
+      
+      <div class="columns-list">
+        <div 
+          *ngFor="let column of filteredColumns(); trackBy: trackByColumnKey"
+          class="column-item"
+        >
+          <p-checkbox 
+            [ngModel]="column.visible"
+            (ngModelChange)="toggleColumn(column)"
+            [binary]="true"
+            [name]="'column-' + column.key"
+            [inputId]="'column-' + column.key"
+          />
+          <label 
+            [for]="'column-' + column.key"
+            class="column-label"
+          >
+            {{ column.header }}
+          </label>
+          <p-tag 
+            [value]="column.type" 
+            severity="secondary" 
+            class="column-type"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <p-button 
+        label="Reset" 
+        [text]="true" 
+        (click)="resetColumns()"
+      />
+      <p-button 
+        label="Cancel" 
+        [text]="true" 
+        (click)="visibleChange.emit(false)"
+      />
+      <p-button 
+        label="Apply" 
+        (click)="applyChanges()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
