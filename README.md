@@ -1,64 +1,41 @@
 # Dynamic Table App
 
-A production-ready Angular 18 application featuring a PrimeNG-powered dynamic table with server-side data management, column customization, and advanced filtering capabilities.
+A production-ready Angular 18 application featuring a PrimeNG-powered dynamic table component. Built with standalone components, TypeScript strict mode, and optimized for maintainability, performance, and developer experience.
 
-## 🚀 Features
+## �� Current Features
 
-- **Dynamic Table Component** with configurable columns and behaviors
-- **Server-side Data Management** with pagination, sorting, and filtering
-- **Column Management** with show/hide, reorder, and resize capabilities
-- **Global Search** with debounced input
-- **Row Selection** (single and multi-select)
-- **Export Functionality** (CSV export)
-- **Responsive Design** with mobile-friendly interface
-- **Accessibility** with proper ARIA labels and keyboard navigation
-- **TypeScript Strict Mode** for type safety
-- **Comprehensive Testing** with Jest
-- **Code Quality** with ESLint, Prettier, and Husky pre-commit hooks
+### ✅ **Implemented Features**
 
-## 🏗️ Architecture
+- **Dynamic Table Component** - Configuration-driven table with multiple column types
+- **Column Management** - Show/hide columns with localStorage persistence
+- **Data Operations** - Client-side pagination, sorting, and filtering
+- **Row Selection** - Single and multi-row selection with bulk actions
+- **Export Functionality** - CSV export with customizable data
+- **Responsive Design** - Mobile-friendly with PrimeNG theming
+- **Real API Integration** - Examples with JSONPlaceholder and REST Countries APIs
+- **TypeScript Strict Mode** - Full type safety and strict compilation
+- **Modern Architecture** - Standalone components with clean separation of concerns
+- **Code Quality** - ESLint, Prettier, and Jest testing setup
 
-The application follows clean architecture principles with clear separation of concerns:
+### 🔧 **Technical Stack**
 
-```
-src/app/
-├── core/                    # Singleton services and infrastructure
-│   ├── services/           # Core services (config, logger)
-│   ├── interceptors/       # HTTP interceptors
-│   ├── guards/             # Route guards
-│   └── tokens/             # Dependency injection tokens
-├── shared/                 # Reusable UI components and utilities
-│   ├── components/         # Shared UI components
-│   ├── pipes/              # Custom pipes
-│   ├── validators/         # Form validators
-│   └── models/             # Shared models
-└── features/
-    └── data-table/         # Data table feature module
-        ├── components/     # Feature-specific components
-        ├── services/       # Business logic services
-        ├── models/         # Feature-specific models
-        ├── utils/          # Utility functions
-        └── data/           # Mock data and API handlers
-```
-
-### Design Patterns
-
-- **Facade Pattern**: `DataTableFacade` isolates UI from data logic
-- **Strategy Pattern**: For server-side filtering/sorting building
-- **Adapter Pattern**: For normalizing API payloads to internal models
-- **Dependency Inversion**: UI depends on abstractions, not concretions
-
-## 🛠️ Tech Stack
-
-- **Angular 18** (Standalone components, control flow, deferrable views)
-- **PrimeNG 18** (UI components)
-- **RxJS 7+** (Reactive programming)
-- **TypeScript 5.4** (Strict mode)
-- **Jest** (Unit testing)
-- **ESLint + Prettier** (Code quality)
-- **Husky** (Git hooks)
+- **Angular 18** - Latest version with standalone components
+- **PrimeNG 18** - UI component library with custom theming
+- **TypeScript 5.4** - Strict mode with advanced type checking
+- **RxJS 7+** - Reactive programming with signals
+- **Jest** - Unit testing framework
+- **ESLint + Prettier** - Code quality and formatting
+- **Husky** - Git hooks for pre-commit validation
 
 ## 📦 Installation
+
+### Prerequisites
+
+- Node.js 18+ 
+- pnpm (recommended) or npm
+- Angular CLI 18+
+
+### Setup
 
 1. **Clone the repository**
    ```bash
@@ -68,232 +45,222 @@ src/app/
 
 2. **Install dependencies**
    ```bash
+   pnpm install
+   # or
    npm install
    ```
 
-3. **Install mock server dependencies**
+3. **Start development server**
    ```bash
-   cd tools/mock-server
-   npm install
-   cd ../..
+   pnpm start
+   # or
+   npm start
    ```
 
-4. **Start the development server**
-   ```bash
-   npm run start:mock
+4. **Open in browser**
    ```
-
-   This will start both the Angular development server and the mock API server.
-
-## 🚀 Available Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm start` | Start Angular development server |
-| `npm run start:mock` | Start with mock API server |
-| `npm run build` | Build for production |
-| `npm run build:analyze` | Build and analyze bundle size |
-| `npm test` | Run unit tests |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:coverage` | Run tests with coverage report |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint issues |
-| `npm run format` | Format code with Prettier |
-| `npm run format:check` | Check code formatting |
+   http://localhost:4200
+   ```
 
 ## 🎯 Usage
 
-### Basic Table Setup
+### Basic Implementation
 
 ```typescript
-import { TableColumn } from './models/table-column.model';
+import { DynamicTableComponent } from './shared/dynamic-table/dynamic-table.component';
+import { TableColumn, TableConfig, Row } from './models/table-column.model';
 
-const columns: TableColumn[] = [
-  {
-    key: 'id',
-    header: 'ID',
-    type: 'text',
-    width: '80px',
-    sortable: true,
-    filterable: true,
-    frozen: 'left'
-  },
-  {
-    key: 'name',
-    header: 'Name',
-    type: 'text',
-    width: '150px',
-    sortable: true,
-    filterable: true
-  },
-  {
-    key: 'status',
-    header: 'Status',
-    type: 'badge',
-    width: '120px',
-    sortable: true,
-    filterable: true,
-    options: [
-      { label: 'Active', value: 'Active' },
-      { label: 'Inactive', value: 'Inactive' }
-    ],
-    badgeColorFn: (row) => row.status === 'Active' ? 'success' : 'danger'
-  }
-];
-```
-
-### Component Usage
-
-```html
-<app-dynamic-table
-  [columns]="columns"
-  [endpoint]="'/api/rows'"
-  [title]="'My Data Table'"
-  [config]="tableConfig"
-  (rowClick)="onRowClick($event)"
-  (selectionChange)="onSelectionChange($event)"
-/>
-```
-
-### Configuration Options
-
-```typescript
-const tableConfig = {
-  endpoint: '/api/rows',
-  pageSizeOptions: [10, 25, 50, 100],
-  enableVirtualScroll: false,
-  enableSelection: true,
-  enableInlineEdit: false,
-  enableColumnPicker: true,
-  enableGlobalSearch: true,
-  enableExport: true
-};
-```
-
-## 🔧 API Integration
-
-The table expects a REST API with the following endpoint:
-
-### GET /api/rows
-
-**Query Parameters:**
-- `page`: Page number (0-based)
-- `size`: Page size
-- `sort`: Sort fields (e.g., `name:asc,date:desc`)
-- `global`: Global search term
-- `filter[field]`: Field-specific filters
-
-**Response:**
-```json
-{
-  "data": [
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [DynamicTableComponent],
+  template: `
+    <app-dynamic-table
+      [data]="data()"
+      [columns]="columns()"
+      [loading]="loading()"
+      [total]="total()"
+      [config]="tableConfig"
+      (rowClick)="onRowClick($event)"
+      (selectionChange)="onSelectionChange($event)"
+      (search)="onSearch($event)"
+      (filter)="onFilter($event)"
+      (sort)="onSort($event)"
+      (pageChange)="onPageChange($event)"
+      (export)="onExport()"
+      (reset)="onReset()"
+    />
+  `
+})
+export class ExampleComponent {
+  data = signal<Row[]>([]);
+  loading = signal<boolean>(false);
+  total = signal<number>(0);
+  
+  columns = signal<TableColumn[]>([
     {
-      "id": "1",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "status": "Active"
+      key: 'id',
+      header: 'ID',
+      type: 'text',
+      width: '80px',
+      sortable: true,
+      filterable: true,
+      frozen: 'left'
+    },
+    {
+      key: 'name',
+      header: 'Name',
+      type: 'text',
+      width: '200px',
+      sortable: true,
+      filterable: true
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      type: 'badge',
+      width: '120px',
+      sortable: true,
+      filterable: true,
+      options: [
+        { label: 'Active', value: 'active' },
+        { label: 'Inactive', value: 'inactive' }
+      ],
+      badgeColorFn: (row) => row.status === 'active' ? 'success' : 'danger'
     }
+  ]);
+
+  tableConfig: TableConfig = {
+    pageSizeOptions: [10, 25, 50, 100],
+    enableSelection: true,
+    enableColumnPicker: true,
+    enableGlobalSearch: true,
+    enableExport: true
+  };
+
+  // Event handlers
+  onRowClick(row: Row) { /* Handle row click */ }
+  onSelectionChange(selectedIds: string[]) { /* Handle selection */ }
+  onSearch(searchTerm: string) { /* Handle search */ }
+  onFilter(event: { column: string; value: any }) { /* Handle filter */ }
+  onSort(event: { field: string; direction: 'asc' | 'desc' }) { /* Handle sort */ }
+  onPageChange(event: { page: number; size: number }) { /* Handle pagination */ }
+  onExport() { /* Handle export */ }
+  onReset() { /* Handle reset */ }
+}
+```
+
+### Column Types
+
+#### 1. **Text Column**
+```typescript
+{
+  key: 'title',
+  header: 'Title',
+  type: 'text',
+  width: '300px',
+  sortable: true,
+  filterable: true
+}
+```
+
+#### 2. **Number Column**
+```typescript
+{
+  key: 'age',
+  header: 'Age',
+  type: 'number',
+  width: '80px',
+  sortable: true,
+  filterable: true
+}
+```
+
+#### 3. **Date Column**
+```typescript
+{
+  key: 'createdAt',
+  header: 'Created',
+  type: 'date',
+  width: '120px',
+  sortable: true,
+  filterable: true
+}
+```
+
+#### 4. **Badge Column**
+```typescript
+{
+  key: 'status',
+  header: 'Status',
+  type: 'badge',
+  width: '120px',
+  sortable: true,
+  filterable: true,
+  options: [
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' }
   ],
-  "total": 100,
-  "page": 0,
-  "size": 10,
-  "totalPages": 10
+  badgeColorFn: (row) => row.status === 'active' ? 'success' : 'danger'
 }
 ```
 
-## 🎨 Theming
-
-The application uses PrimeNG's Lara Light Blue theme with custom CSS variables:
-
-```scss
-:root {
-  --table-row-height: 48px;
-  --table-zebra-stripe: true;
-  --table-header-sticky: true;
+#### 5. **Dropdown Filter Column**
+```typescript
+{
+  key: 'category',
+  header: 'Category',
+  type: 'text',
+  width: '150px',
+  sortable: true,
+  filterable: true,
+  options: [
+    { label: 'Technology', value: 'tech' },
+    { label: 'Business', value: 'business' },
+    { label: 'Design', value: 'design' }
+  ]
 }
 ```
 
-## 🧪 Testing
+### Table Configuration
 
-### Unit Tests
-```bash
-npm test
+```typescript
+interface TableConfig {
+  pageSizeOptions: number[];           // [10, 25, 50, 100]
+  enableVirtualScroll?: boolean;       // Virtual scroll for large datasets
+  enableSelection?: boolean;           // Row selection
+  enableInlineEdit?: boolean;          // Inline editing
+  enableColumnPicker?: boolean;        // Show/hide columns
+  enableGlobalSearch?: boolean;        // Global search
+  enableExport?: boolean;              // Export functionality
+}
 ```
 
-### Coverage Report
-```bash
-npm run test:coverage
-```
+## 🎨 Examples
 
-### Test Structure
-- Services: `*.service.spec.ts`
-- Components: `*.component.spec.ts`
-- Coverage target: ≥80% for features/data-table
+### 1. **Posts Management** (`/posts`)
+- Real API integration with JSONPlaceholder
+- Client-side filtering and pagination
+- Multiple column types with badges
+- Export functionality
+- Row actions (View, Edit, Delete)
 
-## 📊 Performance
+### 2. **Countries List** (`/countries`)
+- REST Countries API integration
+- Badge columns with color functions
+- Search and filter capabilities
+- Responsive design
 
-### Bundle Optimization
-- Tree-shaking enabled for PrimeNG imports
-- Lazy loading for feature modules
-- OnPush change detection strategy
-- Virtual scrolling for large datasets
+### 3. **Users Management** (`/users`)
+- Mock data implementation
+- Selection and bulk actions
+- Column picker demonstration
 
-### Bundle Analysis
-```bash
-npm run build:analyze
-```
+### 4. **Data Table Page** (`/`)
+- Comprehensive demo page
+- All features showcased
+- Multiple column types
 
-## 🔒 Code Quality
+## ��️ Architecture
 
-### Pre-commit Hooks
-- ESLint checks and fixes
-- Prettier formatting
-- TypeScript compilation
-
-### Code Standards
-- Conventional Commits
-- TypeScript strict mode
-- SOLID principles
-- Clean architecture
-
-## 🚀 Deployment
-
-### Production Build
-```bash
-npm run build
-```
-
-### Environment Configuration
-- Development: `src/environments/environment.ts`
-- Production: `src/environments/environment.prod.ts`
-
-## 🤝 Contributing
-
-1. Follow the established code style
-2. Write tests for new features
-3. Update documentation as needed
-4. Use conventional commit messages
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 🆘 Troubleshooting
-
-### Common Issues
-
-1. **Mock server not starting**
-   - Ensure Node.js 18+ is installed
-   - Run `cd tools/mock-server && npm install`
-
-2. **Build errors**
-   - Clear node_modules and reinstall
-   - Check TypeScript version compatibility
-
-3. **Test failures**
-   - Ensure all dependencies are installed
-   - Check Jest configuration
-
-### Support
-
-For issues and questions, please create an issue in the repository.
+### Project Structure
