@@ -245,18 +245,12 @@ interface TableConfig {
 - Export functionality
 - Row actions (View, Edit, Delete)
 
-### 2. **Countries List** (`/countries`)
-- REST Countries API integration
-- Badge columns with color functions
-- Search and filter capabilities
-- Responsive design
-
-### 3. **Users Management** (`/users`)
+### 2. **Users Management** (`/users`)
 - Mock data implementation
 - Selection and bulk actions
 - Column picker demonstration
 
-### 4. **Data Table Page** (`/`)
+### 3. **Data Table Page** (`/`)
 - Comprehensive demo page
 - All features showcased
 - Multiple column types
